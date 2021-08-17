@@ -1,8 +1,12 @@
-FROM docker.io/library/golang:1.6-alpine AS build
-COPY main.go .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+FROM node:12.7-alpine AS build
+WORKDIR /app
+COPY / ./
+COPY package*.json ./
+RUN npm install -g @angular/cli@10.0.4 && \
+    npm install && \
+    ng build
+COPY . .
 
-FROM scratch
-COPY --from=build /go/app /bin/
-EXPOSE 8080
-CMD ["app"]
+FROM nginx:1.17.1-alpine
+WORKDIR /app
+COPY --from=build /app/dist/ui /usr/share/nginx/html
