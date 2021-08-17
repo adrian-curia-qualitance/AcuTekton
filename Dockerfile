@@ -1,4 +1,4 @@
-FROM docker.io/library/golang:1.6-alpine AS build
+FROM quay.io/openshift-pipeline/golang:1.14-alpine AS build
 COPY main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
